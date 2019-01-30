@@ -1,0 +1,74 @@
+﻿@model IEnumerable<EntityLayer.Orders>
+
+@{
+    ViewBag.Title = "Siparişler";
+}
+
+
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+<table class="table">
+    <tr>
+        <th>
+            Sipariş Tarihi
+        </th>
+        <th>
+            Sipariş Durumu
+        </th>
+        <th>
+            Siparişi Veren
+        </th>
+        <th>
+            Sipariş Detayı
+        </th>
+        <th>
+            Kurye
+        </th>
+        @*<th></th>*@
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderStatus)
+            </td>
+            <td>
+                @{ foreach (var Cus in ViewBag.Customers) // Sipariş veren müşteri
+                    {
+                        if (Cus.Id == item.CustomersId)
+                        {
+                            @Cus.Name;
+                        }
+                    }
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderDetails)
+            </td>
+            <td>
+                @{ foreach (var Cour in ViewBag.Courier) // Sipariş veren müşteri
+                    {
+                        if (Cour.Id == item.CourierId)
+                        {
+                            @Cour.Name;
+                        }
+                    }
+                }
+            </td>
+
+
+            @*<td>
+                @Html.ActionLink("Düzenle", "OrderDetails", new { id=item.Id })
+               @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+        </tr>
+    }
+
+</table>

@@ -1,0 +1,57 @@
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+using AdminLayer.Models;
+using EntityLayer;
+using Microsoft.AspNet.Identity;
+
+namespace AdminLayer.Controllers
+{
+    public class HomeController : Controller
+    {
+        private RestoranEntities db = new RestoranEntities();
+        public ActionResult Index()
+        {
+            
+            return View();
+        }
+
+        public ActionResult InComingCallJson()
+        {
+            var user = db.AspNetUsers.Find(User.Identity.GetUserId());
+            var r = db.IncomingCallLog.FirstOrDefault(x => x.IsReaded == false && x.CompanyId == user.CompanyId);
+            IncomingCallModel result = new IncomingCallModel();
+            if (r != null)
+            {
+                r.IsReaded = true;
+                db.SaveChanges();
+                var c = db.Customers.FirstOrDefault(x => x.PhoneNumber == r.PhoneNumber && x.CompanyId == user.CompanyId);
+                if (c != null)
+                {
+                    result = new IncomingCallModel
+                    {
+                        phoneNumber = r.PhoneNumber,
+                        customerAddress = c.Address,
+                        customerAddressDesc = c.AddressDesc,
+                        customerName = c.Name,
+                        customerId = c.Id,
+                        courierList = user.Company.Courier.Select(st => new CourierType { Id = st.Id, Name = st.Name }).ToList(),
+                        lastCallDate = DateTime.Now.AddHours(-4).ToShortDateString()
+                    };
+                }
+                else
+                {
+                    result = new IncomingCallModel
+                    {
+                        phoneNumber = r.PhoneNumber,
+                        customerAddress = "",
+                        customerAddressDesc = "",
+                        customerName = "",
+                        courierList = user.Company.Courier.Select(st => new CourierType { Id = st.Id, Name = st.Name }).ToList(),
+                    };
+                }
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

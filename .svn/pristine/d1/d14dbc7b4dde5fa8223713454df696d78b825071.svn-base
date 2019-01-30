@@ -1,0 +1,179 @@
+﻿@using System.Web.Optimization
+@using WebHelpers.Mvc5.Enum
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
+        {
+            @ViewBag.Title@: -
+        }
+        AdminLTE
+    </title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    @Styles.Render("~/Bundles/css")
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        @Html.Partial("_Header")
+        @Html.Partial("_Sidebar")
+
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                    <small>@ViewBag.Description</small>
+                </h1>
+            </section>
+
+            <section class="content">
+                @RenderBody()
+
+
+                <div id="incomingCallModalNewCustomer" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Yeni Müşteri - <k class="IncomingCallPhoneNumber"></k></h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @using (Html.BeginForm("Create", "Customer", FormMethod.Post))
+                                        {
+                                            <div class="form-horizontal">
+                                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                @Html.Hidden("PhoneNumber", "", new { @class = "IncomingCallPhoneNumberHidden" })
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Ad Soyad</label>
+                                                    <div class="col-md-10">
+                                                        <input type="text" name="Name" required class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Adres</label>
+                                                    <div class="col-md-10">
+                                                        <textarea name="Address" required class="form-control" style="width:100%;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Yol Tarifi</label>
+                                                    <div class="col-md-10">
+                                                        <textarea name="AddressDesc" required class="form-control" style="width:100%;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="form-control">Kaydet</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="incomingCallModal" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3><k class="IncomingCallCustomerName"></k> - <k class="IncomingCallPhoneNumber"></k></h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @using (Html.BeginForm("Create", "Customer", FormMethod.Post))
+                                        {
+                                            <div class="form-horizontal">
+                                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                @Html.Hidden("PhoneNumber", "", new { @class = "IncomingCallPhoneNumberHidden" })
+
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Ad Soyad</label>
+                                                    <div class="col-md-10">
+                                                        <input type="text" name="Name" required class="form-control customerNameInput" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Adres</label>
+                                                    <div class="col-md-10">
+                                                        <textarea name="Address" required class="form-control customerAddressInput" style="width:100%;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Yol Tarifi</label>
+                                                    <div class="col-md-10">
+                                                        <textarea name="AddressDesc" required class="form-control customerAddressDescInput" style="width:100%;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="form-control">Kaydet</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        @Html.Partial("_ControlSidebar")
+    </div>
+
+    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
+    <script src="@EnumHandler.HandlerUrl"></script>
+    @Scripts.Render("~/Bundles/js")
+    @RenderSection("ViewSpecificJavascript", required: false)
+    <script>
+        $(function () {
+            checkIncomingCall();
+            $(".modal").on("hidden.bs.modal", function () {
+                checkIncomingCall();
+            })
+        });
+        function checkIncomingCall() {
+            $.getJSON("@Url.Action("InComingCallJson","Home")", function (data) {
+                if (data.phoneNumber == null) {
+                    setTimeout(function () {
+                        checkIncomingCall();
+                    }, 2000);
+                } else if (data.customerId == null) {
+                    // Kullanıcı Kayıtlı Değil
+                    $(".IncomingCallPhoneNumber").html(data.phoneNumber);
+                    $(".IncomingCallPhoneNumberHidden").val(data.phoneNumber);
+                    $("#incomingCallModalNewCustomer").modal("show");
+                } else {
+                    // Kullanıcı Kullanıcı Kayıtlı
+                    $(".IncomingCallPhoneNumber").html(data.phoneNumber);
+                    $(".customerNameInput").html(data.customerName);
+                    $(".customerAddressInput").html(data.customerAddress);
+                    $(".customerAddressDescInput").html(data.customerAddressDesc);
+                    $(".IncomingCallCustomerName").html(data.customerName);
+                    $("#incomingCallModal").modal("show");
+                }
+                
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿using EntityLayer;
+using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace AdminLayer.Controllers
+{
+    public class CustomerController : Controller
+    {
+        private RestoranEntities db = new RestoranEntities();
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(Customers customer) {
+            var user = db.AspNetUsers.Find(User.Identity.GetUserId());
+            customer.CompanyId = user.CompanyId;
+            db.Customers.Add(customer);
+            db.SaveChanges();
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+    }
+}

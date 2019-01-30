@@ -1,0 +1,22 @@
+﻿using EntityLayer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace AdminLayer.Controllers
+{
+    public class OrdersController : Controller
+    {
+        private RestoranEntities db = new RestoranEntities();
+        // GET: Orders
+        public ActionResult Index()
+        {
+            var orders = db.Orders.OrderByDescending(x=>x.OrderDate);
+            ViewBag.Customers = db.Customers.ToList();
+            ViewBag.Courier = db.Courier.ToList();
+            return View(orders);
+        }
+    }
+}

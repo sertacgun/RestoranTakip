@@ -1,0 +1,75 @@
+﻿@model IEnumerable<AspNetUsers>
+
+@{
+    ViewBag.Title = "Index";
+}
+<p>
+    @Html.ActionLink("Yeni Kullanıcı", "Register", null, new { @class = "btn btn-success" })
+</p>
+<div class="flip-scroll">
+    <div class="portlet box blue">
+        <div class="portlet-body">
+            <table class="table table-striped table-bordered " id="listtable" >
+                <thead>
+                    <tr>
+                        <th>
+                            No
+                        </th>
+                        <th>
+                            E-Mail
+                        </th>
+                        @*<th>
+                            İsim
+                        </th>*@
+                        @*<th>
+                            Rol
+                        </th>*@
+                        <th>
+                            İşlemler
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1;}
+                    @foreach (var item in Model)
+                    {
+                        var Roles = "";
+                        <tr class="@(item.PasswordHash.IndexOf("-PASIF-") > -1 ? "danger" : "")">
+                            <td>
+                                @i
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            @*<td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>*@
+                            @*<td>
+                                @foreach (var item2 in item.AspNetUserRoles)
+                                {
+                                    //if (Roles != "") { Roles = Roles + ";"; }
+                                    Roles += item2.AspNetRoles.Name + "; ";
+                                }
+                                @Html.Raw(Roles)
+                            </td>*@
+                            <td>
+                                <a class="btn btn-info kucuk-button" href="~/Account/Edit?id=@item.Id" title="Düzenle">D</a>
+                                <a class="btn btn-info kucuk-button" href="~/Account/UserRolsIndex/@item.Id" title="Roleri Düzenle">RD</a>
+
+                                @if (item.PasswordHash.IndexOf("PASIF") > -1)
+                                {
+                                    <a class="btn btn-danger kucuk-button" href="~/Account/Aktif?id=@item.Id" title="Aktif">A</a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-success kucuk-button" href="~/Account/Pasif?id=@item.Id" title="Pasif">p</a>
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
